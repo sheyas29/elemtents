@@ -7,11 +7,13 @@ fi
 
 input="$1"
 
-result=$(psql -d periodic_table -t -A -c "
+result=$(psql -U freecodecamp -d periodic_table -t -A -c "
 SELECT e.atomic_number, e.name, e.symbol, p.type_id, p.atomic_mass, p.melting_point_celsius, p.boiling_point_celsius
 FROM elements e
 JOIN properties p ON e.atomic_number = p.atomic_number
-WHERE e.atomic_number::text = '$input' OR e.symbol = '$input' OR e.name ILIKE '$input';
+WHERE e.atomic_number::text = '$input'
+   OR e.symbol = '$input'
+   OR LOWER(e.name) = LOWER('$input');
 ")
 
 if [ -z "$result" ]; then
